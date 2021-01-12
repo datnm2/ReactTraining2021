@@ -35,3 +35,23 @@
     transform: rotate(360deg);
   }
 }
+
+
+ul.horizontal {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: rgb(96, 75, 214);
+}
+.horizontal > li {
+  float: left;
+  padding: 3px;
+}
+.horizontal > li > a{
+  color: #fff;
+}
+
+.lyrics {
+  font-style: italic;
+}
