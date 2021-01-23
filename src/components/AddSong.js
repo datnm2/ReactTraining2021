@@ -1,24 +1,28 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-
-export default function AddSong({ onAddSong }) {
+import { useDispatch } from 'react-redux';
+import { addSong } from '../songSlice'
+export default function AddSong() {
     const [songName, setSongName] = useState("");
     const [singerName, setSingerName] = useState("");
     const [lyric, setLyric] = useState("");
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
         if (songName && singerName && lyric) {
             const newId = uuidv4()
-            onAddSong({
+            const newSong = {
                 id: newId,
                 author: singerName,
                 title: songName,
                 lyric: lyric,
                 publishedAt: new Date().toISOString()
-            })
+            }
+            // update state to store
+            dispatch(addSong(newSong))
             history.push(`/song/${newId}`)
         } else {
             alert('Please input all the fields!')

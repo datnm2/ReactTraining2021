@@ -9,16 +9,13 @@ import './App.css';
 import AddSong from './components/AddSong';
 import SongDetail from './components/SongDetail';
 import SongList from './components/SongList';
-import externalSongs from './songs'
+// import externalSongs from './songs'
+import { useSelector } from 'react-redux';
 
-const sortedSong = [...externalSongs].sort((a, b) => new Date(a.publishedDate) - new Date(b.publishedDate))
+// const sortedSong = [...externalSongs].sort((a, b) => new Date(a.publishedDate) - new Date(b.publishedDate))
 function App() {
-
-  const [currentSongs, setSongs] = useState(sortedSong);
-
-  const handleAddSong = (newSong) => {
-    setSongs([newSong, ...currentSongs])
-  }
+  const songListFromStore = useSelector(state => state.songs.songList)
+  // const [currentSongs, setSongs] = useState(songListFromStore);
 
   return (
     <div className="App">
@@ -42,13 +39,13 @@ function App() {
               <Home />
             </Route>
             <Route path="/add-song">
-              <AddSong onAddSong={handleAddSong}/>
+              <AddSong />
             </Route>
             <Route path="/songs">
-              <SongList songs={currentSongs} />
+              <SongList songs={songListFromStore} />
             </Route>
             <Route path={`/song/:songId`}>
-              <SongDetail songs={currentSongs} />
+              <SongDetail songs={songListFromStore} />
             </Route>
           </Switch>
         </div>
