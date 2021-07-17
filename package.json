@@ -49,6 +49,6 @@
         "statements": 90
       }
     },
-    "coverageReporters": ["text"]
+    "coverageReporters": ["html"]
   }
 }
