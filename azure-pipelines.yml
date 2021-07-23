@@ -4,63 +4,64 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- main
+  - main
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '14.x'
-  displayName: 'Install Node.js'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "14.x"
+    displayName: "Install Node.js"
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'Install Dependencies and Build'
+  - script: |
+      npm install
+      npm run build
+    displayName: "Install Dependencies and Build"
 
-- script: npm test -- --coverage --ci --reporters=default --reporters=jest-junit --coverageReporters=cobertura
-  displayName: "Unit test"
-  env:
-    CI: true
+  - script: npm test -- --coverage --ci --reporters=default --reporters=jest-junit --coverageReporters=cobertura
+    displayName: "Unit test"
+    env:
+      CI: true
 
-- task: PublishTestResults@2
-  displayName: "Publish Test Results"
-  inputs:
-    testResultsFiles: junit.xml
-    mergeTestResults: true
-  condition: succeededOrFailed()
+  - task: PublishTestResults@2
+    displayName: "Publish Test Results"
+    inputs:
+      testResultsFiles: junit.xml
+      mergeTestResults: true
+    condition: succeededOrFailed()
 
-- task: PublishCodeCoverageResults@1
-  displayName: "Publish code coverage"
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
-    reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
-    failIfCoverageEmpty: true
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish code coverage"
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: "$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml"
+      reportDirectory: "$(System.DefaultWorkingDirectory)/coverage"
+      failIfCoverageEmpty: true
 
-- task: CopyFiles@2
-  inputs:
-    Contents: 'build/**' # Pull the build directory (React)
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    
-#https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/archive-files?view=azure-devops
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
-    includeRootFolder: false
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
-    replaceExistingArchive: true 
+  - task: CopyFiles@2
+    inputs:
+      Contents: "build/**" # Pull the build directory (React)
+      TargetFolder: "$(Build.ArtifactStagingDirectory)"
 
-- task: PublishBuildArtifacts@1
-  inputs: 
-    PathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
-    ArtifactName: 'www' # output artifact named www
-- task: Docker@2
-  displayName: Build and push an image to container registry
-  inputs:
-    containerRegistry: 'datnmtest'
-    repository: 'ReactTraining2021-repo'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+  #https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/archive-files?view=azure-devops
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: "$(System.DefaultWorkingDirectory)/build"
+      includeRootFolder: false
+      archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
+      replaceExistingArchive: true
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
+      ArtifactName: "www" # output artifact named www
+  - task: Docker@2
+    displayName: Build and push an image to container registry
+    inputs:
+      containerRegistry: "datnmtest"
+      repository: "ReactTraining2021-repo"
+      command: "buildAndPush"
+      Dockerfile: "**/Dockerfile"
+      tags: "latest"

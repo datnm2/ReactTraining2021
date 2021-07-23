@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:14
 
 WORKDIR /usr/src/
 
@@ -7,5 +7,5 @@ RUN npm ci --only=production
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE 3000
 CMD [ "npm", "start" ]
