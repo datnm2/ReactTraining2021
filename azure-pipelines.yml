@@ -57,3 +57,10 @@ steps:
   inputs: 
     PathtoPublish: $(Build.ArtifactStagingDirectory) # dist or build files
     ArtifactName: 'www' # output artifact named www
+- task: Docker@2
+  displayName: Build and push an image to container registry
+  inputs:
+    containerRegistry: 'datnmtest'
+    repository: 'ReactTraining2021-repo'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
